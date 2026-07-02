@@ -74,5 +74,20 @@ AppSettings.JSON
 
 // Add Visual Studio Project To GitHub
 
+// Traditional Docker Files Created
+
+.dockerignore
+Dockerfile
+
+//  Deploying to AKS
+
+https://learn.microsoft.com/en-us/azure/aks/automatic/quick-automatic-from-code?tabs=generate-dockerfile%2Cgenerate-kubernetes-manifests%2Cnew-aks-automatic-cluster
+
+
+
+
+
+
+
 
 
