@@ -1,0 +1,78 @@
+﻿/********************* Development Notes/Steps ******************/
+
+#1 Create Project ASP.NET CORE Web API
+
+#2 Add Swagger Support
+
+Install-Package Swashbuckle.AspNetCore -Version 6.6.2
+
+#3 Add CORS Support
+
+Install-Package Microsoft.AspNetCore.Cors
+
+!!!!Also remember to Configure the Azure App Service For the Proper CORS Domain Information!!!
+
+Azure: App Service -> API -> CORS  -> Allowed Origins
+
+
+AppSettings.JSON
+
+ "CorsSettings": {
+    "SpecificOriginsPolicy": {
+      "AllowedOrigins": "http://localhost:4200;",
+      "AllowedHeaders": "Content-Type;Authorization;",
+      "AllowedMethods": "GET;POST;PUT;DELETE;OPTIONS;",
+      "AllowCredentials": true
+    },
+    "AnyOriginPolicy": {
+      "AllowAnyOrigin": true,
+      "AllowedHeaders": "*",
+      "AllowedMethods": "*"
+    }
+  }
+
+
+  Program.cs
+
+
+   // Add the following to Conifgure CORS Settings
+
+            builder.Services.AddCors(options =>
+            {
+                // Configure SpecificOriginsPolicy
+                var specificOriginsSection = builder.Configuration.GetSection("CorsSettings:SpecificOriginsPolicy");
+                if (specificOriginsSection.Exists())
+                {
+                    var allowedOrigins = specificOriginsSection["AllowedOrigins"]?.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    var allowedHeaders = specificOriginsSection["AllowedHeaders"]?.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    var allowedMethods = specificOriginsSection["AllowedMethods"]?.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    var allowCredentials = specificOriginsSection.GetValue<bool>("AllowCredentials");
+
+                    options.AddPolicy("SpecificOriginsPolicy", policy =>
+                    {
+                        if (allowedOrigins != null && allowedOrigins.Length > 0)
+                        {
+                            policy.WithOrigins(allowedOrigins);
+                        }
+                        if (allowedHeaders != null && allowedHeaders.Length > 0)
+                        {
+                            policy.WithHeaders(allowedHeaders);
+                        }
+                        if (allowedMethods != null && allowedMethods.Length > 0)
+                        {
+                            policy.WithMethods(allowedMethods);
+                        }
+                        if (allowCredentials)
+                        {
+                            policy.AllowCredentials();
+                        }
+                    });
+                };
+
+
+
+
+// Add Visual Studio Project To GitHub
+
+
+
