@@ -74,10 +74,100 @@ AppSettings.JSON
 
 // Add Visual Studio Project To GitHub
 
-// Traditional Docker Files Created
 
-.dockerignore
-Dockerfile
+// About Docker Images and Containers
+
+A Docker image is a lightweight, standalone, and read-only template that contains everything needed to run a specific piece of software
+
+
+Containers are isolated environments for running code.
+
+A Docker container app is a standardized, lightweight package that bundles an application's code
+together with all the specific libraries, dependencies, and configuration files it needs to run
+This ensures the application runs identically on any computer, eliminating the classic "it works on my machine" problem
+
+Docker image is a static, read-only template, while a Docker container is a live, running instance created from that image
+
+
+// First Add Docker Support to Web API Project
+
+
+  Open your project in Visual Studio 2022.
+  In the Solution Explorer, right-click your ASP.NET Core MVC project node.  
+  Select Add > Docker Support.
+  Choose your target Target OS (typically Linux for ASP.NET Core) and click OK.
+
+
+// Build the Docker Image
+ 
+ Open your terminal or command prompt, navigate to the folder containing your VS Solution and run the docker build command:
+ 
+
+ docker build -f Docker_Kubernetes.Web.API/Dockerfile -t  dockerkuberneteswebapi:latest .
+
+ -f Folder/File Dockerfile
+ -t my-web-api: Tags your image with a friendly name.
+ .: Instructs Docker to use the current directory context
+
+
+ // Check Docker Images
+
+ docker image ls
+
+
+ // Run your Docker Image as a Docker Container
+
+ Once the image completes building, spin it up into a running container using the docker run command!
+ 
+ docker run -d -p 5000:8080 --name my-running-api dockerkuberneteswebapi:latest
+
+-d: Runs the container in the background (detached mode).
+-p 5000:8080: Maps port 5000 on your local host machine to internal container port 8080.
+--name my-running-api: Assigns a custom name to the container instance.
+
+http://localhost:5000/swagger/index.html
+
+
+
+You can also do the above in Visual Studio 
+
+Top Tool Bar Select Project, to the right the next dropdown select Container(Dockerfile)
+Then press start button.  This will publish the docker image to the local Docker repository and install the container and run it!
+
+
+
+// Deploy To Docker Hub Repository
+
+https://docs.docker.com/docker-hub/repos/manage/hub-images/push/
+
+docker tag "dockerkuberneteswebapi:dev" "orlanmon/monacos_docker_images:v1.0"
+
+docker push "orlanmon/monacos_docker_images:v1.0"
+
+
+// Run Docker Image in Docker Container
+
+
+If your app runs on port 8080 inside the container and you want to access it via http://localhost:3000, use:
+
+docker run -p [host_port]:[container_port]
+
+docker run -p 3000:8080 dockerkuberneteswebapi:dev
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //  Deploying to AKS
 
