@@ -140,30 +140,27 @@ Then press start button.  This will publish the docker image to the local Docker
 
 https://docs.docker.com/docker-hub/repos/manage/hub-images/push/
 
-docker tag "dockerkuberneteswebapi:dev" "orlanmon/monacos_docker_images:v1.0"
+docker tag "dockerkuberneteswebapi:latest" "orlanmon/monacos_docker_images:v1.0"
 
 docker push "orlanmon/monacos_docker_images:v1.0"
 
 
+// Pull the Docker Image From Docker Hub
+
+
+docker pull "orlanmon/monacos_docker_images:v1.0"
+
+
+
 // Run Docker Image in Docker Container
 
+You can do this from Docker Desktop or like above use the following command
 
 If your app runs on port 8080 inside the container and you want to access it via http://localhost:3000, use:
 
 docker run -p [host_port]:[container_port]
 
-docker run -p 3000:8080 dockerkuberneteswebapi:dev
-
-
-
-
-
-
-
-
-
-
-
+docker run -d -p 5000:8080 --name my-running-api orlanmon/monacos_docker_images:v1.0
 
 
 
