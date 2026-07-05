@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: orlanmondockerkuberneteswebapi 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orlanmondockerkuberneteswebapi
+  template:
+    metadata:
+      labels:
+        app: orlanmondockerkuberneteswebapi 
+    spec:
+      containers:
+        - name: orlanmondockerkuberneteswebapi 
+          image: monacoscontainerregistry.azurecr.io/orlanmondockerkuberneteswebapi
+          ports:
+          - containerPort: 8080
