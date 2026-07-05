@@ -164,17 +164,52 @@ docker run -d -p 5000:8080 --name my-running-api orlanmon/monacos_docker_images:
 
 
 
-
-
-//  Deploying to AKS
+//  Deploying to AKS - GitHub Actions 
 
 https://learn.microsoft.com/en-us/azure/aks/automatic/quick-automatic-from-code?tabs=generate-dockerfile%2Cgenerate-kubernetes-manifests%2Cnew-aks-automatic-cluster
 
 
+//  About AKS
+
+https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts
+
+
+// Deploy an Azure Kubernetes Service (AKS) cluster using Azure portal
+
+https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-portal?tabs=azure-cli
+
+
+az aks get-credentials --resource-group monacosenterprise --name MonacosKubernetesCluster
+
+kubectl get nodes
 
 
 
 
+// Authenticate with Azure Container Registry (ACR) from Azure Kubernetes Service (AKS)
+
+
+https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?pivots=azure-cli
+
+
+// Deploying to AKS - Automated Deployments CI/CD
+
+https://learn.microsoft.com/en-us/azure/aks/automated-deployments?tabs=generate-dockerfile%2Cexisting-kubernetes-manifests%2Cexpose-ingress
 
 
 
+AKS - Settings -> Automated Deployments
+
+
+AKS Kubernetes manifest files auto generated
+
+deployment.yaml
+service.yaml
+
+
+https://www.youtube.com/watch?v=mv8qJzyZggE
+
+
+kubectl apply -f deployment.yaml -f service.yaml
+
+How to deploy Docker Image to AKS using Azure DEVOPS and GitHub
