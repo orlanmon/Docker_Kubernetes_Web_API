@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-workflow-webapi-deployment
+  namespace: namespace-workflow-1783267916431
+  labels:
+    app.kubernetes.io/name: aks-workflow-webapi-deployment
+    kubernetes.azure.com/generator: devhub
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: aks-workflow-webapi-deployment
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
