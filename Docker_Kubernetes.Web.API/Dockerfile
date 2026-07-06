@@ -10,7 +10,7 @@ WORKDIR /app
 # HOST_PORT = External / Host Port - port traffic hits on your real machine 
 # CONTAINER_PORT = Internal / Container Port - port your specific app is actually listening to inside its isolated environment
 
-
+# Port/s the application inside the container listens on at runtime
 EXPOSE 8080
 
 
