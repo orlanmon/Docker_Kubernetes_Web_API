@@ -6,6 +6,11 @@ USER $APP_UID
 WORKDIR /app
 
 # Container Listens on this port
+# Docker Publish Command: docker run -p  HOST_PORT:CONTAINER_PORT  ie   docker run -p 8080:80
+# HOST_PORT = External / Host Port - port traffic hits on your real machine 
+# CONTAINER_PORT = Internal / Container Port - port your specific app is actually listening to inside its isolated environment
+
+
 EXPOSE 8080
 
 

@@ -70,7 +70,9 @@ AppSettings.JSON
                 };
 
 
-
+//************************************************************
+// Build Docker Image and Install Image into Docker Container
+//************************************************************
 
 // Add Visual Studio Project To GitHub
 
@@ -162,6 +164,170 @@ docker run -p [host_port]:[container_port]
 
 docker run -d -p 5000:8080 --name my-running-api orlanmon/monacos_docker_images:v1.0
 
+//***************************
+// Deployment to AKS Cluster
+//***************************
+
+//  About AKS
+
+https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts
+
+
+Create new Azure DEVOPS Project
+Create new Azure DEVOPS Pipeline
+Use Azure DEVOPS  Docker to Kubernetes Cluster On the Right Hand Menu
+
+One Modification Needed
+
+In the Azure DevOps Docker@2 task, the buildContext parameter specifies the path to the directory containing the files that the Docker daemon can access during the image build process
+
+Azure DevOps: Modify the buildContext parameter in your Docker task to point to the root directory $(Build.SourcesDirectory) instead of the default Dockerfile directory
+
+
+task: Docker@2
+  displayName: 'Build Docker Image'
+  inputs:
+    containerRegistry: 'MyAzureContainerRegistry'
+    repository: 'my-web-app'
+    command: 'build'
+    Dockerfile: 'src/Services/Ordering/Dockerfile'
+   --> buildContext: '$(Build.SourcesDirectory)' # Sets the context to the repo root
+    tags: |
+      $(Build.BuildId)
+      latest
+
+
+To grant an Azure DevOps pipeline permission to deploy workloads to an Azure Kubernetes Service (AKS) cluster,
+you must authorize the pipeline's Service Principal or Managed Identity at two distinct levels:
+the Azure infrastructure layer and the Kubernetes API layer
+
+https://learn.microsoft.com/en-us/azure/aks/concepts-identity
+
+Enable Workload Identity - default security method
+
+Authentication and Authorization - Local Accounts with Kubernetes RBAC
+
+
+
+
+// Permissions for AKS Service Account For CI/CD Deployment
+
+
+Remove Secrets from CI/CD Pipeline YAML
+
+Assign the AcrPull Role to your AKS Cluster
+
+Instead of storing credentials in a Kubernetes secret, grant your AKS cluster's managed identity (kubelet identity) direct read access to ACR
+
+Azure Bash Shell
+
+AKS_NAME="MonacosKubernetesCluster"
+RG_NAME="monacosenterprise"
+ACR_NAME="MonacosContainerRegistry"
+
+# Get the Kubelet Identity Object ID
+CLIENT_ID=$(az aks show --resource-group $RG_NAME --name $AKS_NAME --query identityProfile.kubeletidentity.objectId -o tsv)
+
+# Assign AcrPull role to the ACR
+ACR_ID=$(az acr show --name $ACR_NAME --query id -o tsv)
+az role assignment create --assignee $CLIENT_ID --role "AcrPull" --scope $ACR_ID
+
+
+
+
+// Get Service Accounts for AKS
+
+Azure Bash Shell
+
+kubectl get serviceaccount -n default
+
+kubectl get serviceaccounts --all-namespaces
+
+
+
+// Create a Role YAML - use nano editor
+
+role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: deployment-manager
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+
+
+// Bind the Role to the Service Account  YAML - use nano editor
+
+rolebinding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: deployment-manager-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: azdev-sa-5d2bd3
+  namespace: namespace-kas-webapi
+roleRef:
+  kind: Role
+  name: deployment-manager
+  apiGroup: rbac.authorization.k8s.io
+
+
+Run the YAML
+
+ kubectl apply -f role.yaml
+
+ kubectl apply -f rolebinding.yaml
+
+
+  // Deployment Completed - Find the running container
+
+  kubectl get services
+
+  172.214.4.231   8080:31996/TCP
+
+  http://172.214.4.231:8080/swagger/index.html
+
+
+  How to view containers from Azure Portal
+
+
+  Navigate to your Kubernetes service cluster resource.
+  
+  On the left-hand menu, find the Kubernetes resources section and select Workloads.
+  
+  Click on the Pods tab.
+  
+  Select a specific Pod from the list. ( Pod man contain one to many containers and is the smallest deployable unit in Kubernetes )
+  
+  Scroll down to the Containers section in the details pane to see status, image details, and environment variables
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//**************************************************************************************
+// Following is a just misc links to various AKS Deployment Methods and Documentation
+//**************************************************************************************
 
 
 //  Deploying to AKS - GitHub Actions 
@@ -169,21 +335,16 @@ docker run -d -p 5000:8080 --name my-running-api orlanmon/monacos_docker_images:
 https://learn.microsoft.com/en-us/azure/aks/automatic/quick-automatic-from-code?tabs=generate-dockerfile%2Cgenerate-kubernetes-manifests%2Cnew-aks-automatic-cluster
 
 
-//  About AKS
-
-https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts
-
-
 // Deploy an Azure Kubernetes Service (AKS) cluster using Azure portal
 
 https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-portal?tabs=azure-cli
 
 
+The az aks get-credentials command downloads the access credentials for a managed Kubernetes (AKS) cluster and merges them into your local kubeconfig file (~/.kube/config) so you can interact with the cluster using kubectl
+
 az aks get-credentials --resource-group monacosenterprise --name MonacosKubernetesCluster
 
 kubectl get nodes
-
-
 
 
 // Authenticate with Azure Container Registry (ACR) from Azure Kubernetes Service (AKS)
@@ -213,3 +374,6 @@ https://www.youtube.com/watch?v=mv8qJzyZggE
 kubectl apply -f deployment.yaml -f service.yaml
 
 How to deploy Docker Image to AKS using Azure DEVOPS and GitHub
+
+
+
