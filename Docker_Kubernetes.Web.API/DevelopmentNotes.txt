@@ -102,7 +102,7 @@ Docker image is a static, read-only template, while a Docker container is a live
 
 // Build the Docker Image
  
- Open your terminal or command prompt, navigate to the folder containing your VS Solution and run the docker build command:
+ Open your terminal or command prompt, navigate to the folder containing your !VS Solution! and run the docker build command:
  
 
  docker build -f Docker_Kubernetes.Web.API/Dockerfile -t  dockerkuberneteswebapi:latest .
@@ -126,6 +126,17 @@ Docker image is a static, read-only template, while a Docker container is a live
 -d: Runs the container in the background (detached mode).
 -p 5000:8080: Maps port 5000 on your local host machine to internal container port 8080.
 --name my-running-api: Assigns a custom name to the container instance.
+
+
+# Docket File EXPOSE 8080
+# This maps to the Kubernetes Deployment YAML  containerPort
+
+
+# Docker Publish Command: docker run -p  HOST_PORT:CONTAINER_PORT  ie   docker run -p 8080:80
+# HOST_PORT = External / Host Port - port traffic hits on your real machine 
+# CONTAINER_PORT = Internal / Container Port - port your specific app is actually listening to inside its isolated environment
+
+
 
 http://localhost:5000/swagger/index.html
 
@@ -291,6 +302,9 @@ Run the YAML
 
 
   // Deployment Completed - Find the running container
+
+  az aks get-credentials --resource-group monacosenterprise   --name MonacosKubernetesCluster
+
 
   kubectl get services
 

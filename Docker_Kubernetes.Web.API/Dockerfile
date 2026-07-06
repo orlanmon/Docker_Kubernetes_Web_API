@@ -5,12 +5,13 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
 
-# Container Listens on this port
+
 # Docker Publish Command: docker run -p  HOST_PORT:CONTAINER_PORT  ie   docker run -p 8080:80
 # HOST_PORT = External / Host Port - port traffic hits on your real machine 
 # CONTAINER_PORT = Internal / Container Port - port your specific app is actually listening to inside its isolated environment
 
 # Port/s the application inside the container listens on at runtime
+# This maps to the Kubernetes Deployment YAML  containerPort
 EXPOSE 8080
 
 
