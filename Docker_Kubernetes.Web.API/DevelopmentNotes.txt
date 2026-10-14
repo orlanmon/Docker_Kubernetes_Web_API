@@ -123,6 +123,7 @@ Docker image is a static, read-only template, while a Docker container is a live
  
  docker run -d -p 5000:8080 --name my-running-api dockerkuberneteswebapi:latest
 
+
 -d: Runs the container in the background (detached mode).
 -p 5000:8080: Maps port 5000 on your local host machine to internal container port 8080.
 --name my-running-api: Assigns a custom name to the container instance.
@@ -182,6 +183,10 @@ docker run -d -p 5000:8080 --name my-running-api orlanmon/monacos_docker_images:
 //  About AKS
 
 https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts
+
+// Create ACR 
+// Create AKS Cluster
+
 
 
 Create new Azure DEVOPS Project
@@ -305,12 +310,31 @@ Run the YAML
 
   az aks get-credentials --resource-group monacosenterprise   --name MonacosKubernetesCluster
 
+  // Services and Ingress to route network traffic to your container apps
 
   kubectl get services
 
   172.214.4.231   8080:31996/TCP
 
   http://172.214.4.231:8080/swagger/index.html
+
+
+  // Node Pools - Collection of Nodes
+
+  // Nodes are VMS that run container workloads
+
+  kubectl get nodes
+
+
+  // Pods - Wrapper of one or more containers ( Share Resources )
+  // A pod is a group of one or more containers that share the same network and storage resources and a specification for how to run the containers. Pods typically have a 1:1 mapping with a container, but you can run multiple containers in a pod.
+
+
+
+  kubectl get pods.
+
+
+
 
 
   How to view containers from Azure Portal
