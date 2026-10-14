@@ -1,0 +1,9 @@
+Basic ASP.NET CORE MVC RESTful Web API which has Docker support and which is then published to 
+Azure Kubernetes Service (AKS) cluster via Azure DevOps CI/CD Pipeline.
+
+Steps 
+#1 Added Docker support to ASP.NET CORE MVC RESTful Web API
+#2 Docker Image Published to Docker Desktop, and then a Docker Container created from that Docker Image.
+# In Azure created Azure Container Registry, and then created Azure Kubernetes Service (AKS) cluster 
+#3 In Azure DevOps CI/CD Pipeline generated and customized a deployment Docker Image to Azure Kubernetes Service (AKS) cluster pipeline.
+
